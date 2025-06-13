@@ -1,0 +1,324 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>沖縄わくわく旅行プラン</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/normalize/8.0.1/normalize.min.css">
+    <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+JP:wght@400;700&display=swap" rel="stylesheet">
+    <style>
+        /* 基本的なリセットとフォント設定 */
+        body {
+            font-family: 'Noto Sans JP', sans-serif;
+            line-height: 1.6;
+            color: #333;
+            background-color: #f8f8f8;
+            margin: 0;
+            padding: 20px;
+            box-sizing: border-box;
+        }
+
+        /* コンテナ */
+        .container {
+            max-width: 800px;
+            margin: 20px auto;
+            background-color: #fff;
+            padding: 30px;
+            border-radius: 10px;
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.1);
+        }
+
+        /* ボタンセクション */z
+                      .buttons {
+                          text-align: right;
+                          margin-bottom: 20px;
+                      }
+
+        #add-button {
+            background-color: #007bff;
+            color: white;
+            padding: 10px 20px;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            font-size: 16px;
+            transition: background-color 0.3s ease;
+        }
+
+        #add-button:hover {
+            background-color: #0056b3;
+        }
+
+        /* 日付セクション */
+        .day {
+            background-color: #e0f2f7; /* 薄い水色 */
+            padding: 10px 15px;
+            margin-top: 30px;
+            border-radius: 8px;
+            box-shadow: 0 2px 5px rgba(0, 0, 0, 0.05);
+        }
+
+        .day h2 {
+            margin: 0;
+            color: #0056b3; /* 濃いめの青 */
+            font-size: 24px;
+            font-weight: 700;
+        }
+
+        /* スケジュールアイテム */
+        .schedule {
+            display: flex;
+            background-color: #ffffff;
+            border: 1px solid #ddd;
+            border-radius: 8px;
+            margin-top: 15px;
+            padding: 15px;
+            box-shadow: 0 2px 5px rgba(0, 0, 0, 0.05);
+            transition: transform 0.2s ease, box-shadow 0.2s ease;
+            cursor: pointer; /* クリック可能なことを示す */
+        }
+
+        .schedule:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
+        }
+
+        .schedule > div:first-child {
+            /* 時間 */
+            flex-basis: 90px; /* ★ここを120pxから調整しました。例: 80px, 90px, 100pxなど */
+            flex-shrink: 0;
+            font-weight: bold;
+            color: #007bff;
+            font-size: 16px;
+            padding-right: 15px;
+            border-right: 1px solid #eee;
+        }
+
+
+        .schedule > div:last-child {
+            /* タイトル・説明・URL */
+            flex-grow: 1;
+            padding-left: 15px;
+        }
+
+        .schedule > div:last-child > div:first-child {
+            /* タイトル */
+            font-size: 18px;
+            font-weight: 700;
+            color: #333;
+            margin-bottom: 5px;
+        }
+
+        .schedule > div:last-child > div:nth-child(2) {
+            /* 説明 */
+            font-size: 14px;
+            color: #666;
+            margin-bottom: 10px;
+        }
+
+        /* 場所リンク */
+        .schedule a {
+            display: inline-block; /* リンクをブロック要素のように扱い、paddingを適用 */
+            margin-top: 5px;
+            color: white;
+            background-color: #28a745; /* 緑色 */
+            padding: 8px 15px;
+            border-radius: 20px; /* 角丸を大きく */
+            text-decoration: none; /* 下線なし */
+            font-size: 14px;
+            transition: background-color 0.3s ease;
+        }
+
+        .schedule a:hover {
+            background-color: #218838;
+        }
+
+        /* トップに戻るリンク */
+        .back-to-top {
+            display: block;
+            text-align: center;
+            margin-top: 40px;
+        }
+
+        .back-to-top a {
+            color: #007bff;
+            text-decoration: none;
+            font-size: 16px;
+            padding: 10px 20px;
+            border: 1px solid #007bff;
+            border-radius: 5px;
+            transition: background-color 0.3s ease, color 0.3s ease;
+        }
+
+        .back-to-top a:hover {
+            background-color: #007bff;
+            color: white;
+        }
+
+        /* モーダルとオーバーレイの基本的なスタイル (非表示) */
+        /*
+        #delete-confirm-modal {
+            position: fixed;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            background-color: white;
+            padding: 20px;
+            border-radius: 8px;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+            z-index: 1001;
+            text-align: center;
+            width: 300px;
+        }
+
+        .modal-content {
+            margin-bottom: 20px;
+        }
+
+        .modal-buttons button {
+            padding: 8px 15px;
+            margin: 0 10px;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            font-size: 15px;
+        }
+
+        #delete-yes-button {
+            background-color: #dc3545;
+            color: white;
+        }
+
+        #delete-no-button {
+            background-color: #6c757d;
+            color: white;
+        }
+
+        #modal-overlay {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background-color: rgba(0, 0, 0, 0.6);
+            z-index: 1000;
+        }
+
+        .modal-hidden {
+            display: none;
+        }
+
+        .modal-visible {
+            display: block;
+        }
+
+        .schedule-item {
+            cursor: pointer;
+        }
+        */
+    </style>
+</head>
+<body>
+<div class="container">
+
+    <div class="day">
+        <h2>2025-06-15</h2>
+    </div>
+    <div class ="schedule schedule-item" data-schedule-title="平井家出発">
+        <div>9:30</div>
+        <div>
+            <div>平井家出発</div>
+            <div>絶対遅刻しない</div>
+        </div>
+    </div>
+    <div class ="schedule schedule-item" data-schedule-title="品川家出発">
+        <div>10:00</div>
+        <div>
+            <div>品川家出発</div>
+            <div>忘れ物しないように！</div>
+        </div>
+    </div>
+    <div class ="schedule schedule-item" data-schedule-title="ミスターパーキング">
+        <div>11:00</div>
+        <div>
+            <div>ミスターパーキング</div>
+            <div>事故に気をつけて！</div>
+            <div style="padding: 5px;"><a style="margin-top: 5px; color: white; background-color: #28a745; padding: 5px;border-radius: 10px;" href="https://maps.app.goo.gl/fGZVmmvQwDNWVAi98">場所</a></div>
+        </div>
+    </div>
+    <div class ="schedule schedule-item" data-schedule-title="飛行機：福岡 → 那覇">
+        <div>13:00 - 14:50</div>
+        <div>
+            <div>飛行機：福岡 → 那覇</div>
+            <div>Let's enjoy Okinawa!</div>
+        </div>
+    </div>
+    <div class ="schedule schedule-item" data-schedule-title="TAレンタカー">
+        <div>15:00</div>
+        <div>
+            <div>TAレンタカー</div>
+            <div>レンタカーを借りる</div>
+        </div>
+    </div>
+    <div class ="schedule schedule-item" data-schedule-title="名城ビーチ琉球ホテルチェックイン">
+        <div>15:30 - 16:00</div>
+        <div>
+            <div>名城ビーチ琉球ホテルチェックイン</div>
+            <div>まずはプールに入ろう！</div>
+            <div style="padding: 5px;"><a style="margin-top: 5px; color: white; background-color: #28a745; padding: 5px;border-radius: 10px;" href="https://maps.app.goo.gl/W48EqeUwAk1xP37C8">場所</a></div>
+        </div>
+    </div>
+    <div class ="schedule schedule-item" data-schedule-title="お酒など買い出し">
+        <div>19:00</div>
+        <div>
+            <div>お酒など買い出し</div>
+            <div>ドン引きするくらい買おう！</div>
+        </div>
+    </div>
+
+    <div class="day">
+        <h2>2025-06-16</h2>
+    </div>
+    <div class ="schedule schedule-item" data-schedule-title="名城ビーチ琉球ホテルチェックアウト">
+        <div>10:00</div>
+        <div>
+            <div>名城ビーチ琉球ホテルチェックアウト</div>
+            <div>テンション高めていこう</div>
+        </div>
+    </div>
+    <div class ="schedule schedule-item" data-schedule-title="DMMかりゆし水族館">
+        <div>10:15</div>
+        <div>
+            <div>DMMかりゆし水族館</div>
+            <div>いつもいただいている命に感謝を。</div>
+            <div style="padding: 5px;"><a style="margin-top: 5px; color: white; background-color: #28a745; padding: 5px;border-radius: 10px;" href="https://maps.app.goo.gl/GNMzfNH38b8eBRUf7">場所</a></div>
+        </div>
+    </div>
+    <div class ="schedule schedule-item" data-schedule-title="名城ビーチ琉球ホテルチェックアウト">
+        <div>13:00くらい</div>
+        <div>
+            <div>お昼ご飯</div>
+            <div>ステーキいっちゃう？</div>
+        </div>
+    </div>
+    <div class ="schedule schedule-item" data-schedule-title="名城ビーチ琉球ホテルチェックアウト">
+        <div>15:00</div>
+        <div>
+            <div>アメリカンヴィレッジ</div>
+            <div>アメリカ人になっちゃおう！</div>
+        </div>
+    </div>
+
+    <div class="day">
+        <h2>2025-06-17</h2>
+    </div>
+    <div class ="schedule schedule-item" data-schedule-title="名城ビーチ琉球ホテルチェックアウト">
+        <div>19:00</div>
+        <div>
+            <div>那覇空港</div>
+            <div>また行こうね！</div>
+        </div>
+    </div>
+</div>
+</body>
+</html>
